@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from futsalVideoServer.videoProcessing import videoProcessing
+
+from views.videoProcessing import videoProcessing
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^video/$', videoProcessing)
+    url(r'^video/$', videoProcessing.as_view(), name='video-processing')
 ]
