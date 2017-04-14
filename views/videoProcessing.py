@@ -20,7 +20,7 @@ import numpy as np
 
 s3 = boto3.resource('s3')
 
-NODE_API = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com/"
+NODE_API = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com"
 
 class videoProcessing(View):
     def get(self, request, *args, **kwargs):
