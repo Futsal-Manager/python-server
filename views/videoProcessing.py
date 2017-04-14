@@ -20,6 +20,8 @@ import numpy as np
 
 s3 = boto3.resource('s3')
 
+NODE_API = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com/"
+
 class videoProcessing(View):
     def get(self, request, *args, **kwargs):
         # Print out bucket names
@@ -32,7 +34,7 @@ class videoProcessing(View):
     post.body data is
     {
         "s3Url" : "hi",
-        "userId": "1",
+        "email": "1",
         "ballColor": "#FFFFFF"
     }
     '''
@@ -43,27 +45,31 @@ class videoProcessing(View):
     # (V) 3. Video Write
     # (V) 4. S3 에 업로드
     # (V) 5. 파일 삭제
-    # 6. Node 서버에게 영상작업 완료되었다고 전달.
+    # (V) 6. Node 서버에게 영상작업 완료되었다고 전달.
     # 7. Node 서버는 처리 완료된 S3 링크를 유져에게 전달.
 
     def post(self, request, *args, **kwargs):
         jsonBody = json.loads(request.body)
         s3Url = jsonBody['s3Url']
+        email = jsonBody['email']
+        ballColor = jsonBody['ballColor']
+        token = jsonBody['token']
         fileNameWithExtension = s3Url.split('/')[-1]
         onlyFileName = fileNameWithExtension.split('.')[0]
         outputFileName = onlyFileName + '-output.mp4'
-        # print jsonBody['userId']
-        # print jsonBody['ballColor']
         # 선 응답 후 처리? http://docs.celeryproject.org/
+
+        if token != 'dfisdfn2@#23sdfbjsdfj23klnSDFn1l32nlkndskdskfjs@#f@!#dsf':
+            return JsonResponse({'isSuccess': False, 'message': 'Token is Invalid'})
 
         # File Download from url
         urllib.urlretrieve(s3Url, fileNameWithExtension)
         print 'Download Success'
 
-
-
         # Image Processing
-        ################## CV Logic Start ######################
+        ########################################################
+        ################## Todo: CV Logic Start ################
+        ########################################################
         cap = cv2.VideoCapture(fileNameWithExtension)
 
         size = (int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)),
@@ -116,16 +122,14 @@ class videoProcessing(View):
         os.remove(outputFileName) # remove output file
         print 'file remove success'
 
+        ########################################################
+        ################## Todo: CV Logic End ##################
+        ########################################################
 
-
-        ################## CV Logic End ######################
-
-        # Todo: Node Server에 완료되었다고 Request 날리기.
-        response = requests.get('http://www.naver.com/')
-        print 'request success'
-        print(response)
-
-
+        # Todo: 하드코딩되어 있는 토큰을 설정에서 set하기
+        payload = {'email': email, 'processedS3Url': url, 'token': 'dfisdfn2@#23sdfbjsdfj23klnSDFn1l32nlkndskdskfjs@#f@!#dsf'}
+        postRequest = requests.post(NODE_API + '/mail/hook', json=payload)
+        print('Post request to node', postRequest)
 
         return JsonResponse({'isSuccess': True, 'message': 'This is POST Request', 'gotData': jsonBody, 'processedS3Url': url})
 
