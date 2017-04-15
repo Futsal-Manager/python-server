@@ -56,7 +56,7 @@ class videoProcessing(View):
         token = jsonBody['token']
         fileNameWithExtension = s3Url.split('/')[-1]
         onlyFileName = fileNameWithExtension.split('.')[0]
-        outputFileName = onlyFileName + '-output.mov'
+        outputFileName = onlyFileName + '-output.mp4'
         # 선 응답 후 처리? http://docs.celeryproject.org/
 
         if token != 'dfisdfn2@#23sdfbjsdfj23klnSDFn1l32nlkndskdskfjs@#f@!#dsf':
@@ -75,7 +75,7 @@ class videoProcessing(View):
         size = (int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)),
                 int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)))
         fps = 30
-        fourcc = cv2.cv.CV_FOURCC('M','J','P','G')  # note the lower case
+        fourcc = cv2.cv.CV_FOURCC('H','2','6','4')  # note the lower case
         vout = cv2.VideoWriter()
         success = vout.open(outputFileName, fourcc, fps, size, False)
 
