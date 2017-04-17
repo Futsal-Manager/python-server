@@ -76,7 +76,7 @@ class videoProcessing(View):
         print 'size is: ', int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),  'x', int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         fps = 30
-        fourcc = cv2.VideoWriter_fourcc('m','p','4','v')  # note the lower case
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')  # note the lower case
         vout = cv2.VideoWriter()
         success = vout.open(outputFileName, fourcc, fps, size, False)
 
