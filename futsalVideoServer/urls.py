@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from views.videoProcessing import videoProcessing
-from views.root import root
+# from views._root import root
 
 urlpatterns = [
     # url(r'^$', root.as_view(), name='root'),
