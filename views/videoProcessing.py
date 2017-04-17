@@ -63,6 +63,7 @@ class videoProcessing(View):
             return JsonResponse({'isSuccess': False, 'message': 'Token is Invalid'})
 
         # File Download from url
+        print 'Download Start'
         urllib.urlretrieve(s3Url, fileNameWithExtension)
         print 'Download Success'
 
