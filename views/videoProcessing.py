@@ -73,10 +73,10 @@ class videoProcessing(View):
         ########################################################
         cap = cv2.VideoCapture(fileNameWithExtension)
 
-        size = (int(cap.get(cv2.CV_CAP_PROP_FRAME_WIDTH)),
-                int(cap.get(cv2.CV_CAP_PROP_FRAME_HEIGHT)))
+        print 'size is: ', int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),  'x', int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         fps = 30
-        fourcc = cv2.VideoWriter_fourcc('H','2','6','4')  # note the lower case
+        fourcc = cv2.VideoWriter_fourcc('m','p','4','v')  # note the lower case
         vout = cv2.VideoWriter()
         success = vout.open(outputFileName, fourcc, fps, size, False)
 
@@ -87,8 +87,8 @@ class videoProcessing(View):
                 # Todo: Frame 계산하여 Percent를 표시할 것.
                 # print 'ret true'
                 # Our operations on the frame come here
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                vout.write(gray)
+                # frame = cv2.flip(frame, 0)
+                vout.write(frame)
             else:
                 break
 
