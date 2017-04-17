@@ -17,8 +17,10 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from views.videoProcessing import videoProcessing
+from views.root import root
 
 urlpatterns = [
+    url(r'^', root.as_view(), name='root'),
     url(r'^admin/', admin.site.urls),
     url(r'^video/$', videoProcessing.as_view(), name='video-processing')
 ]
