@@ -72,8 +72,8 @@ class videoProcessing(View):
         ########################################################
         cap = cv2.VideoCapture(fileNameWithExtension)
 
-        size = (int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)),
-                int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)))
+        size = (int(cap.get(cv2.CV_CAP_PROP_FRAME_WIDTH)),
+                int(cap.get(cv2.CV_CAP_PROP_FRAME_HEIGHT)))
         fps = 30
         fourcc = cv2.VideoWriter_fourcc('H','2','6','4')  # note the lower case
         vout = cv2.VideoWriter()
