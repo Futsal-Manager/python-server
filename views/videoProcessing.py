@@ -12,13 +12,13 @@ import requests
 
 # AWS Python SDK
 import boto3
-
+from botocore.client import Config
 
 # For OpenCV
 import cv2
 import numpy as np
 
-s3 = boto3.resource('s3')
+s3 = boto3.resource('s3', 'ap-northeast-2')
 
 NODE_API = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com"
 
@@ -76,7 +76,7 @@ class videoProcessing(View):
         print 'size is: ', int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),  'x', int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         fps = 30
-        fourcc = cv2.VideoWriter_fourcc(*'avc1')  # note the lower case
+        fourcc = cv2.VideoWriter_fourcc(*'H264')  # note the lower case
         vout = cv2.VideoWriter()
         success = vout.open(outputFileName, fourcc, fps, size, False)
 
@@ -87,7 +87,7 @@ class videoProcessing(View):
                 # Todo: Frame 계산하여 Percent를 표시할 것.
                 # print 'ret true'
                 # Our operations on the frame come here
-                # frame = cv2.flip(frame, 0)
+                frame = cv2.flip(frame, 0)
                 vout.write(frame)
             else:
                 break
@@ -99,8 +99,9 @@ class videoProcessing(View):
 
         # S3에 업로드
         # Todo: 업로드후, 클라이언트로 요청해야만 받을 수 있나?
-        data = open(outputFileName, 'rb')
-        client = boto3.client('s3')
+        # data = open(outputFileName, 'rb')
+	data = open(fileNameWithExtension, 'rb')
+        client = boto3.client('s3', config=Config(signature_version='s3v4'))
         bucket_name = 'futsal-manager'
 
         resp = client.put_object(
@@ -115,7 +116,7 @@ class videoProcessing(View):
             'get_object',
             Params={
                 'Bucket': bucket_name,
-                'Key': outputFileName, })
+                'Key': outputFileName,})
         print('get s3 url ' + url)
 
         # S3에 업로드 후 삭제
