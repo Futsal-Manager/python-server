@@ -74,7 +74,7 @@ originImg = None
 prevCenter = None
 
 # Make Window
-cv2.namedWindow('frame')
+# cv2.namedWindow('frame')
 
 # create trackbars for color change
 # cv2.createTrackbar('BALL_ERROR_RANGE', 'frame', BALL_ERROR_RANGE, 50, nothing)
@@ -488,7 +488,7 @@ def processing(videoPath):  # videoPath
     # For Output Config
     output_fps = 30
     size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    fourcc = cv2.VideoWriter_fourcc(*'avc1')  # MAC: MPEG H264, UBUNTU:avc1 note the lower case
+    fourcc = cv2.VideoWriter_fourcc(*'MPEG')  # MAC: MPEG H264, UBUNTU:avc1 note the lower case
     vout = cv2.VideoWriter()
     success = vout.open('Futsal_Manager_Out.mp4', fourcc, output_fps, size, False)
 
@@ -606,5 +606,5 @@ def processing(videoPath):  # videoPath
     # Todo 영상의 Total Second 반환해야 함
 
     # 열려있는 창 닫음
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     return sortedSet
