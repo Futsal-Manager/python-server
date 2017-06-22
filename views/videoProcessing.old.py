@@ -20,17 +20,10 @@ import numpy as np
 
 # Internal Dependency
 from openCV import processing
-from mergeTimeAt import mergeTimeAt
 
 s3 = boto3.resource('s3', 'ap-northeast-2')
 
-LOCAL_MODE = "http://localhost:3000"
-REMOTE_MODE = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com"
-
-# Todo: Need to Set LOCAL_MODE or REMOTE_MODE
-MODE = LOCAL_MODE
-
-NODE_API = LOCAL_MODE if MODE == LOCAL_MODE else REMOTE_MODE
+NODE_API = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com"
 
 class videoProcessing(View):
     def get(self, request, *args, **kwargs):
@@ -84,15 +77,36 @@ class videoProcessing(View):
         ########################################################
         ################## Todo: CV Logic Start ################
         ########################################################
-        timeArr = processing(fileNameWithExtension) # 받아온 파일을 openCV Processing
-        ########################################################
-        ################## Todo: CV Logic End ################
-        ########################################################
+        cap = cv2.VideoCapture(fileNameWithExtension)
+
+        print 'size is: ', int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),  'x', int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        fps = 30
+        fourcc = cv2.VideoWriter_fourcc(*'MPEG')  # note the lower case
+        vout = cv2.VideoWriter()
+        success = vout.open(outputFileName, fourcc, fps, size, False)
+
+        while (True):
+            # Capture frame-by-frame
+            ret, frame = cap.read()
+            if ret == True:
+                # Todo: Frame 계산하여 Percent를 표시할 것.
+                # print 'ret true'
+                # Our operations on the frame come here
+                frame = cv2.flip(frame, 0)
+                vout.write(frame)
+            else:
+                break
+
+        cap.release()
+        vout.release()
+        cv2.destroyAllWindows()
+        print 'Image Processing success'
 
         # S3에 업로드
         # Todo: 업로드후, 클라이언트로 요청해야만 받을 수 있나?
         # data = open(outputFileName, 'rb')
-        data = open(fileNameWithExtension, 'rb')
+	data = open(fileNameWithExtension, 'rb')
         client = boto3.client('s3', config=Config(signature_version='s3v4'))
         bucket_name = 'futsal-manager'
 
@@ -108,19 +122,23 @@ class videoProcessing(View):
             'get_object',
             Params={
                 'Bucket': bucket_name,
-                'Key': outputFileName, })
+                'Key': outputFileName,})
         print('get s3 url ' + url)
 
         # S3에 업로드 후 삭제
-        os.remove(fileNameWithExtension)  # remove original file
+        os.remove(fileNameWithExtension) # remove original file
+        print 'file remove success'
+
+        ########################################################
+        ################## Todo: CV Logic End ##################
+        ########################################################
 
         # Todo: 하드코딩되어 있는 토큰을 설정에서 set하기
-
-        payload = {'email': email, 'processedS3Url': url, 'token': 'dfisdfn2@#23sdfbjsdfj23klnSDFn1l32nlkndskdskfjs@#f@!#dsf', 'timeArr': mergeTimeAt(timeArr), 'fileName': onlyFileName + "-output"}
-        postRequest = requests.post(NODE_API + '/highlight/edit', json=payload)
+        payload = {'email': email, 'processedS3Url': url, 'token': 'dfisdfn2@#23sdfbjsdfj23klnSDFn1l32nlkndskdskfjs@#f@!#dsf'}
+        postRequest = requests.post(NODE_API + '/mail/hook', json=payload)
         print('Post request to node', postRequest)
 
-        return JsonResponse({'isSuccess': True, 'message': 'This is POST Request', 'gotData': jsonBody, 'processedS3Url': s3Url})
+        return JsonResponse({'isSuccess': True, 'message': 'This is POST Request', 'gotData': jsonBody, 'processedS3Url': url})
 
     def file(selfself, request, *args, **kwargs):
         return JsonResponse({'message': 'This is File Request'})
