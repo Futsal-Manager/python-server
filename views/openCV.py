@@ -488,7 +488,7 @@ def processing(videoPath):  # videoPath
     # For Output Config
     output_fps = 30
     size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    fourcc = cv2.VideoWriter_fourcc(*'MPEG')  # note the lower case
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')  # MAC: MPEG H264, UBUNTU:avc1 note the lower case
     vout = cv2.VideoWriter()
     success = vout.open('Futsal_Manager_Out.mp4', fourcc, output_fps, size, False)
 

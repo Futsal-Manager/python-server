@@ -25,7 +25,7 @@ from mergeTimeAt import mergeTimeAt
 s3 = boto3.resource('s3', 'ap-northeast-2')
 
 LOCAL_MODE = "http://localhost:3000"
-REMOTE_MODE = "http://ec2-52-78-237-85.ap-northeast-2.compute.amazonaws.com"
+REMOTE_MODE = "http://ec2-52-79-77-112.ap-northeast-2.compute.amazonaws.com"
 
 # Todo: Need to Set LOCAL_MODE or REMOTE_MODE
 MODE = REMOTE_MODE
